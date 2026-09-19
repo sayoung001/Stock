@@ -1,3 +1,50 @@
-# Stock
+# Stock — 청산 규칙 재설계 & 백테스트
 
-NASDAQ / KOSPI 퀀트 주식 분석 시스템
+반자동 주식 추천 시스템의 **청산(exit)·백테스트·계측 계층**이다.
+종목 선정(스코어링) 로직은 건드리지 않는다 (`TASK.md` 원칙 1).
+
+## 빠른 시작
+
+```bash
+pip install pandas numpy pytest
+python -m pytest tests/ -q
+python -m stock_auto.backtest.run_exit_backtest --synthetic   # 데이터 없이 배선 확인
+```
+
+## 문서
+
+| 문서 | 내용 |
+|---|---|
+| **[docs/RUNBOOK_exit_backtest.md](docs/RUNBOOK_exit_backtest.md)** | **실행 가이드 — 여기서 시작** |
+| [TASK.md](TASK.md) | 작업 지시서 (Phase 0~5) |
+| [docs/analysis_2026-09-18.md](docs/analysis_2026-09-18.md) | 배경 성과 분석 |
+| [docs/codemap_exit.md](docs/codemap_exit.md) | Phase 0 코드 파악 결과 + 알려진 한계 |
+| [docs/BACKTEST_100D.md](docs/BACKTEST_100D.md) | 100일 백테스트 (브랜치 `backtest_100d`) |
+
+## 브랜치
+
+```
+ssh_upload_stock   수정본 — 청산 엔진 + 전 구간 그리드. 파라미터를 정한다
+backtest_100d      백테스트 — + 최근 100 거래일 러너. 정한 값의 최근 성적을 본다
+```
+
+## 구조
+
+```
+stock_auto/
+├── horizons.py          단타 / 중단기 / 스윙 단일 정의
+├── exit/
+│   ├── config.py        ExitConfig — 라벨별 보유상한·SL/TP
+│   ├── atr.py           ATR(14), 진입 전일 기준
+│   ├── engine.py        배리어 시뮬레이션, 갭 체결가
+│   ├── metrics.py       PF·기대값·손익비·MDD·포착률
+│   └── filters.py       확신도 / 쿨다운 / 섹터한도
+├── backtest/
+│   ├── dataset.py       시그널·일봉 로더 (+ 합성)
+│   ├── exit_grid.py     그리드 + walk-forward
+│   ├── report.py        라벨별 분리 리포트
+│   └── run_exit_backtest.py
+└── advisor/advisor.py   라벨별 규칙 기반 조언
+```
+
+※ 분석 보조 자료이며 투자 권유가 아닙니다.
