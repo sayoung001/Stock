@@ -27,8 +27,13 @@ python -m stock_auto.backtest.run_exit_backtest --synthetic   # 데이터 없이
 
 ```
 ssh_upload_stock   수정본 — 청산 엔진 + 전 구간 그리드. 파라미터를 정한다
-backtest_100d      백테스트 — + 최근 100 거래일 러너. 정한 값의 최근 성적을 본다
+backtest_100d      백테스트 — 100일 러너 + ★1000일 모델 백테스트
 ```
+
+> **1000일 백테스트는 `backtest_100d` 브랜치에 있다.** 이 브랜치의 러너는
+> `signals.csv`를 읽으므로 표본이 기록된 시그널 이력(2주 운영 시 24건)에
+> 묶인다. 1000일을 보려면 모델로 시그널을 생성하는
+> `run_model_backtest`를 쓴다.
 
 ## 구조
 
