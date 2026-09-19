@@ -46,6 +46,23 @@ ssh_upload_stock          ← 수정본. SSH 서버에서 실제 데이터로 �
 | 주 명령 | `run_exit_backtest --grid` | `run_100d` |
 | 결과 신뢰도 | 채택 근거로 **쓸 수 있음** | 참고용. 채택 근거로 **쓰면 안 됨** |
 
+### ⭐ 1000일을 보려면 `backtest_100d` 브랜치를 쓴다
+
+이 브랜치의 두 러너는 `signals.csv`를 **읽는다.** 그 파일에는 운영 시작 뒤
+쌓인 시그널만 있어서, 2주치(24건)뿐이면 `--window 1000`을 줘도 결과는
+여전히 24건이다. **표본의 천장이 가격 데이터 길이가 아니라 기록 이력이다.**
+
+1000일을 보려면 과거 일봉에 스코어링 모델을 다시 돌려 시그널을
+**생성**해야 한다. 그 러너는 `backtest_100d` 브랜치에 있다:
+
+```bash
+git checkout backtest_100d
+python -m stock_auto.backtest.run_model_backtest --days 1000 --price-dir ~/price_cache
+```
+
+24종목 × 1000일이면 시그널이 **800~900건** 나온다. 자세한 것은
+`docs/BACKTEST_LONG_RUN.md`와 `docs/MODEL_REPRODUCTION.md`(가정 14개).
+
 ---
 
 ## 2. 설치 (SSH, 한 번만)
